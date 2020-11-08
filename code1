@@ -1,0 +1,52 @@
+# Importing the libraries in this notebook.
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn import metrics
+%matplotlib inline
+
+# importing the dataset.
+url = "http://bit.ly/w-data"
+df = pd.read_csv(url)
+df.head()
+
+# Plotting the distribution of scores.
+df.plot(x="Hours", y="Scores")
+plt.xlabel("Hours of study")
+plt.ylabel("Percentage score")
+plt.title("Hours vs Percentage")
+plt.show()
+
+# Preparing the data.
+X = df.iloc[:, :-1].values
+Y = df.iloc[:, 1].values
+
+# Now splitting the data in train and test datasets.
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size = 0.2, random_state = 0)
+
+# Now training the algorithm using LR.
+regressor = LinearRegression()
+regressor.fit(X_train, Y_train)
+print("Training is done.")
+
+# Plotting the regression line.
+line = regressor.coef_*X+regressor.intercept_
+
+# Plotting the test data.
+plt.scatter(X, y)
+plt.plot(X, line)
+plt.title("Test data")
+plt.show()
+
+# Predictions
+print(X_test) 
+y_pred = regressor.predict(X_test)
+
+# comparssion of the actual and predictions.
+DF = pd.DataFrame(("Actual": y_test, "Predicted": y_pred))
+DF
+
+# Evaluating the model.
+print("Mean Absolute Error:", metrics.mean_absolute_error(y_test, y_pred))
